@@ -72,7 +72,7 @@ Do todos os comandos...
 #define DIV	35      // "100011"; -- DIV Rx Ry Rz 			-- Rx <- Ry / Rz / Rx <- Ry / Rz + C  -- b0=Carry		Format: < inst(6) | Rx(3) | Ry(3) | Rz(3)| C >
 #define INC	36      // "100100"; -- INC Rx / DEC Rx                 		-- Rx <- Rx + 1 / Rx <- Rx - 1  -- b6= INC/DEC : 0/1	Format: < inst(6) | Rx(3) | b6 | xxxxxx >
 #define LMOD 37     // "100101"; -- MOD Rx Ry Rz   			-- Rx <- Ry MOD Rz 	  	Format: < inst(6) | Rx(3) | Ry(3) | Rz(3)| x >
-
+#define SQRT 38     // "100110"; -- SQRT Rx 				-- Rx <- sqrt(Rx)    Format: < inst(6) | Rx(3) | xxxxxx >
 
 // Logic Instructions (All should begin wiht "01"):
 #define LOGIC 1
@@ -390,6 +390,19 @@ loop:
 					LoadReg[rx] = 1;
 					selM6 = sULA;
 					LoadFR = 1;
+					// -----------------------------
+					state=STATE_FETCH;
+					break;
+				
+				case SQRT:
+					// Rx <- Raiz Quadrada de Rx
+					selM3 = rx;      // Mux3 seleciona Rx
+					selM4 = 0;       // Não usado
+					selM2 = sULA;    // Mux2 pega o resultado da ULA
+					OP = opcode;     // Envia OP para ULA
+					LoadReg[rx] = 1; // Habilita escrita no registrador
+					selM6 = sULA;    // Mux6 seleciona flags
+					LoadFR = 1;      // Atualiza Flags
 					// -----------------------------
 					state=STATE_FETCH;
 					break;
@@ -860,7 +873,13 @@ ResultadoUla ULA(unsigned int x, unsigned int y, unsigned int OP, int carry) {
 						result = x%y;
 						auxFRbits[DIV_BY_ZERO] = 0;
 					}
-					break;	
+					break;
+				
+				case SQRT:
+					// SQRT Rx: Calcula raiz quadrada de Rx
+					result = (unsigned int) sqrt(x);
+					break;
+
 				default:
 					result = x;
 			}
