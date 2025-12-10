@@ -303,7 +303,7 @@ loop:
 
 				case OUTCHAR:
 					printf("%c", reg[rx]);
-					// -----------------------------
+					printf("\n[DEBUG] OUTCHAR: R0=%d, R1=%d\n", reg[0], reg[1]);
 					state=STATE_FETCH;
 					break;
 
@@ -394,18 +394,18 @@ loop:
 					state=STATE_FETCH;
 					break;
 				
-				case SQRT:
-					// Rx <- Raiz Quadrada de Rx
-					selM3 = rx;      // Mux3 seleciona Rx
-					selM4 = 0;       // Não usado
-					selM2 = sULA;    // Mux2 pega o resultado da ULA
-					OP = opcode;     // Envia OP para ULA
-					LoadReg[rx] = 1; // Habilita escrita no registrador
-					selM6 = sULA;    // Mux6 seleciona flags
-					LoadFR = 1;      // Atualiza Flags
-					// -----------------------------
-					state=STATE_FETCH;
-					break;
+				   case SQRT:
+					   // Rx <- Raiz Quadrada de Rx
+					   selM3 = rx;      // Mux3 seleciona Rx
+					   selM4 = 8;       // Mux4 seleciona valor neutro (1), não afeta
+					   selM2 = sULA;
+					   OP = opcode;
+					   LoadReg[rx] = 1;
+					   selM6 = sULA;
+					   LoadFR = 1;
+					   state = STATE_FETCH;
+					   printf("[DEBUG] SQRT executado: R0=%d, R1=%d\n", reg[0], reg[1]);
+					   break;
 
 				case INC:
 					//reg[rx]++;                                  // Inc Rx ou DEC
