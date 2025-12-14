@@ -1,5 +1,8 @@
 Simulador do processador contém a instrução adicional SQRT (Square root)
 
+Vídeo do jogo
+https://youtu.be/mPJhBm61SKI?si=KSKSNOUSSRAA0Nwz
+
 📚 Prova de Cálculo: A Fuga da REC
 Um jogo de reflexo e gerenciamento de risco desenvolvido em Assembly.
 
